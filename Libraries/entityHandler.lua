@@ -20,7 +20,7 @@ do
     entity.getEntityFromPlayer = function(char)
         for i,v in pairs(entity.entityList) do
             if v.Player == char then
-                return i
+                return i, v
             end
         end
         return nil
@@ -34,7 +34,7 @@ do
     end
 
     entity.refreshEntity = function(plr, localcheck)
-        local tableIndex = entity.getEntityFromPlayer(plr)
+        local tableIndex, tab = entity.getEntityFromPlayer(plr)
         if tableIndex then
             table.remove(entity.entityList, tableIndex)
         end
@@ -58,6 +58,8 @@ do
                             Player = plr,
                             Character = char,
                             RootPart = humrootpart,
+                            Head = head,
+                            Humanoid = hum,
                             Targetable = entity.isPlayerTargetable(plr),
                             Team = plr.Team
                         })
@@ -104,7 +106,7 @@ do
         entity.entityList = {}
         for i,v in pairs(entity.entityConnections) do if v.Disconnect then v:Disconnect() end end
         entity.entityConnections = {}
-        for i2,v2 in pairs(game:GetService("Players"):GetChildren()) do entity.entityAdded(v2, v2 == lplr) end
+        for i2,v2 in pairs(game:GetService("Players"):GetPlayers()) do entity.entityAdded(v2, v2 == lplr) end
         entity.entityConnections[#entity.entityConnections + 1] = game:GetService("Players").PlayerAdded:connect(function(v2) entity.entityAdded(v2, v2 == lplr) end)
         entity.entityConnections[#entity.entityConnections + 1] = game:GetService("Players").PlayerRemoving:connect(function(v2) entity.removeEntity(v2) end)
     end
