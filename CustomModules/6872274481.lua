@@ -10355,7 +10355,7 @@ if shared.nobolineupdate then
 		TextMessage:Remove()
 		ImageLabel:Remove()
 		local kavo = loadstring(GetURL("Libraries/kavo.lua"))()
-		local window = kavo.CreateLib("Noboline v1.6.3"..(shared.VapePrivate and " - PRIVATE" or ""), "Ocean")
+		local window = kavo.CreateLib("Noboline - Extra"..(shared.VapePrivate and " - PRIVATE" or ""), "Ocean")
 		local realgui = game:GetService("CoreGui")[debug.getupvalue(kavo.ToggleUI, 1)]
 		if not is_sirhurt_closure and syn and syn.protect_gui then
 			syn.protect_gui(realgui)
