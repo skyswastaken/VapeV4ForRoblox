@@ -16,7 +16,7 @@ function Kavo:DraggingEnabled(frame, parent)
     local dragInput, mousePos, framePos
 
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             mousePos = input.Position
             framePos = parent.Position
@@ -30,7 +30,7 @@ function Kavo:DraggingEnabled(frame, parent)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             dragInput = input
         end
     end)
@@ -70,6 +70,20 @@ local themeStyles = {
         TextColor = Color3.fromRGB(0,0,0),
         ElementColor = Color3.fromRGB(224, 224, 224)
     },
+  Luna = { 
+    SchemeColor = Color3.fromRGB(126, 6, 232), 
+    Background = Color3.fromRGB(0, 0, 0), 
+    Header = Color3.fromRGB(31, 31, 31), 
+    TextColor = Color3.fromRGB(255,255,255), 
+    ElementColor = Color3.fromRGB(31, 31, 31) 
+  },
+  Private = {
+    SchemeColor = Color3.fromRGB(255, 212,0), 
+    Background = Color3.fromRGB(0, 0, 0), 
+    Header = Color3.fromRGB(31, 31, 31), 
+    TextColor = Color3.fromRGB(255,255,255), 
+    ElementColor = Color3.fromRGB(20, 20,20) 
+  },
     BloodTheme = {
         SchemeColor = Color3.fromRGB(227, 27, 27),
         Background = Color3.fromRGB(10, 10, 10),
@@ -157,6 +171,10 @@ function Kavo.CreateLib(kavName, themeList)
         themeList = themeStyles.LightTheme
     elseif themeList == "BloodTheme" then
         themeList = themeStyles.BloodTheme
+    elseif themeList == "Luna" then
+        themeList = themeStyles.Luna
+    elseif themeList == "Private" then
+        themeList = themeStyles.Private
     elseif themeList == "GrapeTheme" then
         themeList = themeStyles.GrapeTheme
     elseif themeList == "Ocean" then
@@ -1226,7 +1244,6 @@ function Kavo.CreateLib(kavName, themeList)
                 minvalue = minvalue or 16
                 startVal = startVal or 0
                 callback = callback or function() end
-                local DropFunction = {}
 
                 local sliderElement = Instance.new("TextButton")
                 local UICorner = Instance.new("UICorner")
@@ -1420,7 +1437,7 @@ function Kavo.CreateLib(kavName, themeList)
                             sliderDrag:TweenSize(UDim2.new(0, math.clamp(mouse.X - sliderDrag.AbsolutePosition.X, 0, 149), 0, 6), "InOut", "Linear", 0.05, true)
                         end)
                         releaseconnection = uis.InputEnded:Connect(function(Mouse)
-                            if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+                            if Mouse.UserInputType == Enum.UserInputType.MouseButton1 or Mouse.UserInputType == Enum.UserInputType.Touch then
                                 Value = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 149) * sliderDrag.AbsoluteSize.X) + tonumber(minvalue))
                                 pcall(function()
                                     callback(Value)
@@ -1461,21 +1478,7 @@ function Kavo.CreateLib(kavName, themeList)
                         wait(0)
                         viewDe = false
                     end
-                end)   
-                
-                function DropFunction:UpdateSlider(val2)
-                    Value = val2
-                    pcall(function()
-                        callback(Value)
-                    end)
-                    val.Text = Value
-                    game.TweenService:Create(val, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
-                        TextTransparency = 1
-                    }):Play()
-                    sliderDrag:TweenSize(UDim2.new(0, math.clamp(149 * (val2 / maxvalue), 0, 149), 0, 6), "InOut", "Linear", 0.05, true)
-                end
-
-                return DropFunction
+                end)        
             end
 
             function Elements:NewDropdown(dropname, dropinf, list, callback)
@@ -1753,7 +1756,7 @@ function Kavo.CreateLib(kavName, themeList)
                         if not focusing then
                             opened = false
                             callback(v)
-                            itemTextbox.Text = dropname.." - "..v
+                            itemTextbox.Text = v
                             dropFrame:TweenSize(UDim2.new(0, 352, 0, 33), 'InOut', 'Linear', 0.08)
                             wait(0.1)
                             updateSectionFrame()
@@ -1812,11 +1815,6 @@ function Kavo.CreateLib(kavName, themeList)
                             Sample1.ImageColor3 = themeList.SchemeColor
                         end
                     end)()
-                end
-
-                function DropFunction:SetValue(val)
-                    callback(val)
-                    itemTextbox.Text = dropname.." - "..val
                 end
 
                 function DropFunction:Refresh(newList)
@@ -1888,8 +1886,8 @@ function Kavo.CreateLib(kavName, themeList)
                                 Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
                             end
                         end)
-                        updateSectionFrame()
-                        UpdateSize()
+                                        updateSectionFrame()
+                UpdateSize()
                         local hov = false
                         optionSelect.MouseEnter:Connect(function()
                             if not focusing then
@@ -1935,7 +1933,6 @@ function Kavo.CreateLib(kavName, themeList)
                 keytext = keytext or "KeybindText"
                 keyinf = keyinf or "KebindInfo"
                 callback = callback or function() end
-                local KeybindFunctions = {}
                 local oldKey = first.Name
                 local keybindElement = Instance.new("TextButton")
                 local UICorner = Instance.new("UICorner")
@@ -1969,15 +1966,9 @@ function Kavo.CreateLib(kavName, themeList)
                         togName_2.Text = ". . ."
                         local a, b = game:GetService('UserInputService').InputBegan:wait();
                         if a.KeyCode.Name ~= "Unknown" then
-                            if a.KeyCode.Name == oldKey then
-                                togName_2.Text = "None"
-                                oldKey = "None"
-                            else
-                                togName_2.Text = a.KeyCode.Name
-                                oldKey = a.KeyCode.Name;
-                            end
+                            togName_2.Text = a.KeyCode.Name
+                            oldKey = a.KeyCode.Name;
                         end
-                        callback(oldKey)
                         local c = sample:Clone()
                         c.Parent = keybindElement
                         local x, y = (ms.X - c.AbsolutePosition.X), (ms.Y - c.AbsolutePosition.Y)
@@ -1999,6 +1990,14 @@ function Kavo.CreateLib(kavName, themeList)
                             focusing = false
                         end
                         Utility:TweenObject(blurFrame, {BackgroundTransparency = 1}, 0.2)
+                    end
+                end)
+        
+                game:GetService("UserInputService").InputBegan:connect(function(current, ok) 
+                    if not ok then 
+                        if current.KeyCode.Name == oldKey then 
+                            callback()
+                        end
                     end
                 end)
 
@@ -2141,8 +2140,6 @@ function Kavo.CreateLib(kavName, themeList)
 
                     end
                 end)()
-
-                return KeybindFunctions
             end
 
             function Elements:NewColorPicker(colText, colInf, defcolor, callback)
@@ -2605,7 +2602,7 @@ function Kavo.CreateLib(kavName, themeList)
                 rgb.MouseButton1Down:connect(function()colorpicker=true end)
                 dark.MouseButton1Down:connect(function()darknesss=true end)
                 uis.InputEnded:Connect(function(input)
-                    if input.UserInputType.Name == 'MouseButton1' then
+                    if input.UserInputType.Name == 'MouseButton1' or input.UserInputType.Name == 'Touch' then
                         if darknesss then darknesss = false end
                         if colorpicker then colorpicker = false end
                     end
