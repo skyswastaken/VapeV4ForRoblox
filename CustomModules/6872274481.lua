@@ -10355,7 +10355,53 @@ if shared.nobolineupdate then
 		TextMessage:Remove()
 		ImageLabel:Remove()
 		local kavo = loadstring(GetURL("Libraries/kavo.lua"))()
-		local window = kavo.CreateLib("Noboline - Extra"..(shared.VapePrivate and " - PRIVATE" or ""), "Ocean")
+		local window = kavo.CreateLib("Noboline"..(shared.VapePrivate and " - PRIVATE" or " - Extra"), "Ocean")
+		
+local MainToggle = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local UICorner = Instance.new("UICorner")
+local ToggleBtn = Instance.new("ImageButton")
+
+MainToggle.Name = "MainToggle"
+MainToggle.Parent = game.CoreGui
+MainToggle.ResetOnSpawn = false
+
+Frame.Parent = MainToggle
+Frame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+Frame.BackgroundTransparency = 0.200
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.0109622413, 0, 0.0136186769, 0)
+Frame.Size = UDim2.new(0, 149, 0, 149)
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderSizePixel = 0
+TextLabel.Position = UDim2.new(0.0402684584, 0, 0.798657715, 0)
+TextLabel.Size = UDim2.new(0, 132, 0, 30)
+TextLabel.Font = Enum.Font.SourceSansLight
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
+TextLabel.Text = "Noboline Extra"..(shared.VapePrivate and " Private" or " Extra")
+makeRainbowText(TextLabel, true)
+
+UICorner.Parent = Frame
+
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Parent = Frame
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.BackgroundTransparency = 1.000
+ToggleBtn.Position = UDim2.new(0.137143791, 0, 0.0700296983, 0)
+ToggleBtn.Size = UDim2.new(0, 108, 0, 108)
+ToggleBtn.Image = "rbxassetid://7211055081"
+ToggleBtn.MouseButton1Down:connect(function()
+  kavo:ToggleUI()
+end)
+
 		local realgui = game:GetService("CoreGui")[debug.getupvalue(kavo.ToggleUI, 1)]
 		if not is_sirhurt_closure and syn and syn.protect_gui then
 			syn.protect_gui(realgui)
